@@ -1,4 +1,4 @@
-;;; jsonrpc.el --- JSON-RPC library                  -*- lexical-binding: t; -*-
+;;; jsonrpc-custom.el --- JSON-RPC library                  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2018-2024 Free Software Foundation, Inc.
 
@@ -1154,5 +1154,5 @@ CONNECT-ARGS are passed as additional arguments to
   "Number of outstanding continuations for CONN."
   (length (jsonrpc--continuations conn)))
 
-(provide 'jsonrpc)
+(provide 'jsonrpc-custom)
 ;;; jsonrpc.el ends here
