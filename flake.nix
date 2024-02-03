@@ -26,6 +26,7 @@
         '';
       };
     in {
+      default = copilot;
       copilot = copilot;
     };
   in {
