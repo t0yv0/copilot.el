@@ -16,6 +16,8 @@
 (require 'dash)
 (require 'editorconfig)
 (require 'copilot-balancer)
+(require 'org)
+(require 'vterm)
 
 (defgroup copilot nil
   "Copilot."
@@ -262,7 +264,7 @@ automatically, browse to %s." user-code verification-uri))
   ;; if it is not already activated.
   ;; If it the mode is already active, we have to make sure the current buffer is loaded in the
   ;; agent.
-  (if copilot-mode
+  (if (symbol-value 'copilot-mode)
       (copilot--on-doc-focus (selected-window))
     (copilot-mode))
   (copilot--async-request 'getCompletions
@@ -474,7 +476,8 @@ automatically, browse to %s." user-code verification-uri))
                     "  :END:\n"
                     "#+BEGIN_SRC " copilot--panel-lang "\n"
                     completion-text "\n#+END_SRC\n\n")
-            (mark-whole-buffer)
+            (set-mark (point-max))
+            (goto-char (minibuffer-prompt-end))
             (org-sort-entries nil ?R nil nil "SCORE"))))))
   (when (eql method 'PanelSolutionsDone)
     (message "Copilot: Finish synthesizing solutions.")
@@ -666,7 +669,7 @@ Use TRANSFORM-FN to transform completion if provided."
   ;; window losing focus and once for the window gaining focus. We only want to
   ;; send a notification for the window gaining focus and only if the buffer has
   ;; copilot-mode enabled.
-  (when (and copilot-mode (eq window (selected-window)))
+  (when (and (symbol-value 'copilot-mode) (eq window (selected-window)))
     (if (-contains-p copilot--opened-buffers (current-buffer))
         (copilot--notify ':textDocument/didFocus
                          (list :textDocument (list :uri (copilot--get-uri))))
