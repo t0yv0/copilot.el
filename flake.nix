@@ -18,9 +18,8 @@
           epkgs.s
           epkgs.editorconfig
           epkgs.vterm
-          epkgs.jsonrpc
         ];
-        postInstall = ''
+        preInstall = ''
            mkdir -p $out/share/emacs/site-lisp/
            cp -r $src/dist $out/share/emacs/site-lisp/
         '';
