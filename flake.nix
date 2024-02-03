@@ -13,12 +13,17 @@
         version = "${version}";
         src = ./.;
         packageRequires = [
+          pkgs.patchelf
           epkgs.dash
           epkgs.s
           epkgs.editorconfig
           epkgs.vterm
           epkgs.jsonrpc
         ];
+        postInstall = ''
+           mkdir -p $out/share/emacs/site-lisp/
+           cp -r $src/dist $out/share/emacs/site-lisp/
+        '';
       };
     in {
       copilot = copilot;
