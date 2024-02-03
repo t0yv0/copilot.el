@@ -11,7 +11,7 @@
 ;;; Code:
 (require 'cl-lib)
 (require 'json)
-(require 'jsonrpc-custom)
+(require 'jsonrpc)
 (require 's)
 (require 'dash)
 (require 'editorconfig)
