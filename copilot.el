@@ -180,7 +180,9 @@ indentation offset."
              (setq copilot--connection
                    (make-instance 'jsonrpc-process-connection
                                   :name "copilot"
-                                  :events-buffer-config `(:size ,copilot-log-max)
+                                  ;; Downgrading to jsonrpc bundled with older Emacs:
+                                  ;; :events-buffer-config `(:size ,copilot-log-max)
+                                  :events-buffer-scrollback-size ,copilot-log-max
                                   :notification-dispatcher #'copilot--handle-notification
                                   :process (make-process :name "copilot agent"
                                                          :command (list copilot-node-executable
