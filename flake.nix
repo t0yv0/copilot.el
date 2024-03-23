@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = github:NixOS/nixpkgs/nixos-23.11;
+    nixpkgs.url = github:NixOS/nixpkgs/nixpkgs-23.11-darwin;
   };
 
   outputs = { self, nixpkgs }: let
@@ -8,25 +8,36 @@
       version = self.rev or "dirty";
       pkgs = import nixpkgs { system = sys; };
       epkgs = pkgs.emacsPackagesFor pkgs.emacs29-macport;
+
+      deps = import ./deps/default.nix {
+        pkgs = pkgs;
+        nodejs = pkgs.nodejs;
+      };
+
+      copilot-node-server = builtins.getAttr "copilot-node-server-1.14.0" deps;
+
       copilot = epkgs.trivialBuild {
         pname = "copilot";
         version = "${version}";
         src = ./.;
         packageRequires = [
-          pkgs.patchelf
-          epkgs.dash
-          epkgs.s
+          epkgs.f
           epkgs.editorconfig
           epkgs.vterm
         ];
-        preInstall = ''
-           mkdir -p $out/share/emacs/site-lisp/
-           cp -r $src/dist $out/share/emacs/site-lisp/
+        postPatch = ''
+          substituteInPlace copilot.el \
+            --replace '(locate-user-emacs-file (f-join ".cache" "copilot"))' "\"$out/dist\""
+        '';
+        postInstall = ''
+          mkdir -p "$out/dist"
+          cp -r ${copilot-node-server}/lib/* "$out/dist/"
         '';
       };
     in {
       default = copilot;
       copilot = copilot;
+      copilot-node-server = copilot-node-server;
     };
   in {
     packages = builtins.listToAttrs (builtins.map (sys: {
