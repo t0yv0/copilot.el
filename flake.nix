@@ -27,7 +27,11 @@
         ];
         postPatch = ''
           substituteInPlace copilot.el \
-            --replace '(locate-user-emacs-file (f-join ".cache" "copilot"))' "\"$out/dist\""
+            --replace '(locate-user-emacs-file (f-join ".cache" "copilot"))' \
+                "\"$out/dist/node_modules/copilot-node-server\""
+          substituteInPlace copilot.el \
+            --replace '(f-join copilot-install-dir "lib" "node_modules" "copilot-node-server" "package.json")' \
+                '(f-join copilot-install-dir "package.json")'
         '';
         postInstall = ''
           mkdir -p "$out/dist"
